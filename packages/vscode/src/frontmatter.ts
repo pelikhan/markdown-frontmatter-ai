@@ -7,12 +7,17 @@ export interface SeoOptions {
   temperature?: number;
 }
 
-function tryParseYaml(source: string | undefined) {
+function tryParseYaml<T>(source: string | undefined): Partial<T> {
   try {
-    return source ? parse(source) : {};
+    const cleaned = source?.replace(/^---\n/, "").replace(/---\n?$/, "");
+    return cleaned
+      ? (parse(cleaned, {
+          prettyErrors: true,
+        }) as any)
+      : ({} as any);
   } catch (e) {
     console.log(e);
-    return {};
+    return {} as any;
   }
 }
 
@@ -51,14 +56,17 @@ export async function generateFrontMatter(
     },
     openApiKey
   );
+  if (completion.status !== 200) {
+    console.log(completion.data);
+    return { error: completion.statusText };
+  }
+
   const fm = completion.data?.choices?.[0]?.message?.content;
-  const ryaml = parse(fm!.replace(/^---/, "").replace(/---$/, ""), {
-    prettyErrors: true,
-  }) as {
+  const ryaml = tryParseYaml<{
     title: string;
     description: string;
     keywords: string;
-  };
+  }>(fm);
   const { title, description, keywords } = ryaml;
 
   const newFrontMatter = {

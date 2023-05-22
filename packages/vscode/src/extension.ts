@@ -24,9 +24,13 @@ export function activate(context: vscode.ExtensionContext) {
             location: vscode.ProgressLocation.Notification,
           },
           async () => {
-            const { output } = await generateFrontMatter(content, {
+            const { output, error } = await generateFrontMatter(content, {
               openApiKey,
             });
+            if (error) {
+              vscode.window.showErrorMessage(error);
+              return;
+            }
             if (!output) return;
 
             editor.edit((editBuilder) => {
