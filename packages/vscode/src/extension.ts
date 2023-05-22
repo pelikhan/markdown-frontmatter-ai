@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
-import { getOpenApiKey, storeOpenApiKey } from "./openapikey";
-import { open } from "fs/promises";
+import { getOpenApiKey, storeOpenApiKey, createChatCompletion } from "./openai";
 import { generateFrontMatter } from "./frontmatter";
 
 export function activate(context: vscode.ExtensionContext) {
