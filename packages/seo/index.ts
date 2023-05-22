@@ -15,7 +15,6 @@ interface SeoOptions {
 }
 
 const actionSeo = async (filename: string, options: SeoOptions) => {
-  console.log(filename);
   const { model = "gpt-3.5-turbo" } = options;
   const temperature = 0.0;
 
@@ -42,6 +41,8 @@ const actionSeo = async (filename: string, options: SeoOptions) => {
             yaml: (node: YAML) => node.value,
           },
         });
+
+        console.log(`generating frontmatter for ${filename}`)
         const configuration = new Configuration({
           apiKey: process.env.OPENAI_API_KEY,
         });
@@ -66,7 +67,6 @@ const actionSeo = async (filename: string, options: SeoOptions) => {
           temperature,
         });
         const fm = completion.data.choices[0].message.content;
-        console.log(fm);
         const ryaml = parse(fm.replace(/^---/, "").replace(/---$/, ""), {
           prettyErrors: true,
         }) as {
@@ -80,7 +80,6 @@ const actionSeo = async (filename: string, options: SeoOptions) => {
         if (JSON.stringify(frontmatter) !== JSON.stringify(newFrontMatter)) {
           node.value = stringify(newFrontMatter);
           modified = true;
-          console.log("modified");
         }
       }
     })
