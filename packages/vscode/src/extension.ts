@@ -1,25 +1,28 @@
 import * as vscode from "vscode";
+import { getOpenApiKey, storeOpenApiKey } from "./openapikey";
+import { open } from "fs/promises";
+import { generateFrontMatter } from "./frontmatter";
 
 export function activate(context: vscode.ExtensionContext) {
+  const { secrets } = context;
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.markdownai.frontmatter.generate",
-      () => {
-        // Get the active text editor
+      async () => {
         const editor = vscode.window.activeTextEditor;
+        const content = editor?.document?.getText();
+        if (!content) return;
 
-        if (editor) {
-          const document = editor.document;
-          const selection = editor.selection;
+        const openApiKey = await getOpenApiKey(secrets);
+        if (!openApiKey) return;
 
-          // Get the word within the selection
-          const word = document.getText(selection);
-          const reversed = word.split("").reverse().join("");
-          editor.edit((editBuilder) => {
-            editBuilder.replace(selection, reversed);
-          });
-        }
+        const { modified, output } = generateFrontMatter(content, {
+          openApiKey,
+        });
+        console.log(output)
+
+        editor!.edit((editBuilder) => {});
       }
     )
   );
