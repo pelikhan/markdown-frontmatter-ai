@@ -2,8 +2,20 @@
     "name": "markdown-ai-seo",
     "version": "0.0.0",
     "main": "dist/index.js",
-    "devDependencies": {},
+    "type": "module",
     "scripts": {
-      "build": "tsc index.ts --outDir dist"
+        "build": "tsc -p ./tsconfig.json",
+        "test": "node ./dist/index.js ../../README.md"
+    },
+    "dependencies": {
+        "commander": "^10.0.1",
+        "openai": "^3.2.1",
+        "remark-frontmatter": "^4.0.1",
+        "remark-parse": "^10.0.2",
+        "remark-stringify": "^10.0.3",
+        "to-vfile": "^7.2.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.2.3"
     }
-  }
+}

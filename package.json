@@ -5,10 +5,13 @@
   "scripts": {},
   "private": true,
   "devDependencies": {
-    "nx": "16.2.1",
+    "nx": "^16.2.1",
     "typescript": "^5.0.4"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "openai": "^3.2.1"
+  }
 }
