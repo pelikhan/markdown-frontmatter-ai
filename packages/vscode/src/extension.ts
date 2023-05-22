@@ -17,10 +17,10 @@ export function activate(context: vscode.ExtensionContext) {
         const openApiKey = await getOpenApiKey(secrets);
         if (!openApiKey) return;
 
-        const { modified, output } = generateFrontMatter(content, {
+        const { modified, output } = await generateFrontMatter(content, {
           openApiKey,
         });
-        console.log(output)
+        console.log(output);
 
         editor!.edit((editBuilder) => {});
       }
