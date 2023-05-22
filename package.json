@@ -1,0 +1,14 @@
+{
+  "name": "markdown-ai",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {},
+  "private": true,
+  "devDependencies": {
+    "nx": "16.2.1",
+    "typescript": "^5.0.4"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}
