@@ -1,3 +1,4 @@
+import * as vscode from "vscode";
 import { parse, stringify } from "yaml";
 import { createChatCompletion } from "./openai";
 
@@ -5,27 +6,19 @@ export interface SeoOptions {
   model?: string;
   openApiKey: string;
   temperature?: number;
-}
-
-function tryParseYaml<T>(source: string | undefined): Partial<T> {
-  try {
-    const cleaned = source?.replace(/^---\n/, "").replace(/---\n?$/, "");
-    return cleaned
-      ? (parse(cleaned, {
-          prettyErrors: true,
-        }) as any)
-      : ({} as any);
-  } catch (e) {
-    console.log(e);
-    return {} as any;
-  }
+  logger: vscode.LogOutputChannel;
 }
 
 export async function generateFrontMatter(
   content: string,
   options: SeoOptions
 ) {
-  const { model = "gpt-3.5-turbo", openApiKey, temperature = 0.0 } = options;
+  const {
+    model = "gpt-3.5-turbo",
+    openApiKey,
+    temperature = 0.0,
+    logger,
+  } = options;
 
   // parse as markdown
   const m = /^(---\r?\n(?<frontmatter>.*)---\r?\n)?(?<markdown>.*)$/s.exec(
@@ -35,7 +28,7 @@ export async function generateFrontMatter(
   const { frontmatter, markdown } = m.groups || {};
   if (!markdown) return {};
 
-  console.log(`generating frontmatter...`);
+  logger.info(`generating frontmatter...`);
   const completion = await createChatCompletion(
     {
       model,
@@ -59,10 +52,11 @@ export async function generateFrontMatter(
     openApiKey
   );
   if (completion.status !== 200) {
-    console.log(completion.data);
+    logger.error(completion.statusText);
     return { error: completion.statusText };
   }
 
+  logger.info(JSON.stringify(completion.data, null, 2));
   const fm = completion.data?.choices?.[0]?.message?.content;
   const ryaml = tryParseYaml<{
     title: string;
@@ -82,4 +76,18 @@ export async function generateFrontMatter(
   const output = `---\n${stringify(newFrontMatter)}---\n${markdown}`;
 
   return { output };
+
+  function tryParseYaml<T>(source: string | undefined): Partial<T> {
+    try {
+      const cleaned = source?.replace(/^---\n/, "").replace(/---\n?$/, "");
+      return cleaned
+        ? (parse(cleaned, {
+            prettyErrors: true,
+          }) as any)
+        : ({} as any);
+    } catch (e) {
+      logger.debug(e + "");
+      return {} as any;
+    }
+  }
 }

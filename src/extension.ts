@@ -5,6 +5,13 @@ import { generateFrontMatter } from "./frontmatter";
 export function activate(context: vscode.ExtensionContext) {
   const { secrets } = context;
 
+  const logger = vscode.window.createOutputChannel(
+    "Markdown Frontmatter Generator",
+    {
+      log: true,
+    }
+  );
+
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.markdownai.openai.clearKey",
@@ -33,12 +40,14 @@ export function activate(context: vscode.ExtensionContext) {
           async () => {
             const { output, error } = await generateFrontMatter(content, {
               openApiKey,
+              logger,
             });
             if (error) {
               vscode.window.showErrorMessage(error);
               return;
             }
             if (!output) return;
+            if (output === content) return; // no changes
 
             editor.edit((editBuilder) => {
               const fullRange = new vscode.Range(
