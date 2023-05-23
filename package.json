@@ -23,7 +23,12 @@
       {
         "command": "extension.markdownai.frontmatter.generate",
         "title": "Generate frontmatter",
-        "category": "Markdown"
+        "category": "Markdown Frontmatter"
+      },
+      {
+        "command": "extension.markdownai.openai.clearKey",
+        "title": "Clear OpenAI key",
+        "category": "Markdown Frontmatter"
       }
     ]
   },

@@ -1,25 +1,23 @@
 import * as vscode from "vscode";
 import axios from "axios";
 
-export async function getOpenApiKey(secrets: vscode.SecretStorage) {
-  let key = await secrets.get("openapikey");
+const KEY = "openapikey";
+export async function getOpenAIKey(secrets: vscode.SecretStorage) {
+  let key = await secrets.get(KEY);
   if (!key) {
     key = await vscode.window.showInputBox({
       placeHolder: "OpenAI API Key",
       prompt: "Your OpenAI API Key will be stored in the workspace secrets.",
     });
     if (key !== undefined) {
-      await storeOpenApiKey(secrets, key);
+      await secrets.store("openapikey", key);
     }
   }
   return key;
 }
 
-export async function storeOpenApiKey(
-  secrets: vscode.SecretStorage,
-  value: string
-) {
-  await secrets.store("openapikey", value);
+export async function clearOpenAIKey(secrets: vscode.SecretStorage) {
+  await secrets.delete(KEY);
 }
 
 export interface CreateChatCompletionRequest {

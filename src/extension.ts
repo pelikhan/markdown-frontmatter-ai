@@ -1,11 +1,15 @@
 import * as vscode from "vscode";
-import { getOpenApiKey, storeOpenApiKey, createChatCompletion } from "./openai";
+import { getOpenAIKey, clearOpenAIKey } from "./openai";
 import { generateFrontMatter } from "./frontmatter";
 
 export function activate(context: vscode.ExtensionContext) {
   const { secrets } = context;
 
   context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "extension.markdownai.openai.clearKey",
+      async () => await clearOpenAIKey(secrets)
+    ),
     vscode.commands.registerCommand(
       "extension.markdownai.frontmatter.generate",
       async () => {
@@ -15,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
         const content = editor?.document?.getText();
         if (!content) return;
 
-        const openApiKey = await getOpenApiKey(secrets);
+        const openApiKey = await getOpenAIKey(secrets);
         if (!openApiKey) return;
 
         vscode.window.withProgress(
