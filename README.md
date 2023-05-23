@@ -1,13 +1,15 @@
-# Markdown Frontmatter generator
+# Markdown Frontmatter AI
 
 Visual Studio Code extension that generates title, description and keywords for the current markdown file
 using OpenAI (gpt3.5turbo).
 
 Supports frontmatter `---` with `yaml` entries.
 
+## Usage
+
 - open a markdown file (or mdx)
 - press `ctrl+shift+p` and type `Generate Frontmatter`
-- press `enter` and wait for the magic to happen
+- press `enter` and wait for the magic to happen. If successful, the file will be updated with the new frontmatter.
 
 ## OpenAI Key
 
