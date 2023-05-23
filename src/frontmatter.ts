@@ -37,13 +37,12 @@ export async function generateFrontMatter(
       messages: [
         {
           role: "system",
-          content: `You are a front matter generator for mardown. 
-- You generate the title, description, keywords for the markdown given by the user
+          content: `You are a helpful front matter generator for mardown. You are an SEO expert.
+- You generate the description and keywords for the markdown given by the user
 - use yaml format, do not use quotes
 - do not generate the \`---\` fences
 - only 5 keywords or less
 - optimize for SEO
-- do not append project name to title
 `,
         },
         {
@@ -64,17 +63,15 @@ export async function generateFrontMatter(
   logger.info(JSON.stringify(completion.data, null, 2));
   const fm = completion.data?.choices?.[0]?.message?.content;
   const ryaml = tryParseYaml<{
-    title: string;
     description: string;
     keywords: string;
   }>(fm);
-  const { title, description, keywords: keywordsAll } = ryaml;
+  const { description, keywords: keywordsAll } = ryaml;
 
   const keywords = keywordsAll?.split(/,\s*/g).slice(0, 5).join(", ");
   const yf = tryParseYaml(frontmatter);
   const newFrontMatter = {
     ...yf,
-    title,
     description,
     keywords,
   };

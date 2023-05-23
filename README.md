@@ -1,6 +1,6 @@
 # Markdown Frontmatter AI
 
-Visual Studio Code extension that generates title, description and keywords for the current markdown file
+Visual Studio Code extension that generates description and keywords for the current markdown file
 using OpenAI (gpt3.5turbo).
 
 Supports frontmatter `---` with `yaml` entries.
