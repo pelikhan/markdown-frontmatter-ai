@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.window.withProgress(
           {
-            title: "generating frontmatter...",
+            title: "Markdown: Generating frontmatter...",
             location: vscode.ProgressLocation.Notification,
           },
           async () => {
