@@ -1,5 +1,9 @@
 import * as vscode from "vscode";
-import { getOpenAIKey, clearOpenAIConfiguration, getOpenAIEndPoint } from "./openai";
+import {
+  getOpenAIKey,
+  clearOpenAIConfiguration,
+  getOpenAIEndPoint,
+} from "./openai";
 import { generateFrontMatter } from "./frontmatter";
 
 export function activate(context: vscode.ExtensionContext) {

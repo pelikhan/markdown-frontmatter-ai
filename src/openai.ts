@@ -13,7 +13,7 @@ export async function getOpenAIKey(secrets: vscode.SecretStorage) {
       prompt: "Your OpenAI API Key will be stored in the workspace secrets.",
     });
     if (key !== undefined) {
-      await secrets.store("openapikey", key);
+      await secrets.store(ACCESS_KEY, key);
     }
   }
   return key;

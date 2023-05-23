@@ -41,6 +41,7 @@ export async function generateFrontMatter(
 - You generate the title, description, keywords for the markdown given by the user
 - use yaml format, do not use quotes
 - do not generate the \`---\` fences
+- only 5 keywords or less
 - optimize for SEO
 `,
         },
@@ -66,8 +67,9 @@ export async function generateFrontMatter(
     description: string;
     keywords: string;
   }>(fm);
-  const { title, description, keywords } = ryaml;
+  const { title, description, keywords: keywordsAll } = ryaml;
 
+  const keywords = keywordsAll?.split(/,\s*/g).slice(0, 5).join(", ");
   const yf = tryParseYaml(frontmatter);
   const newFrontMatter = {
     ...yf,
