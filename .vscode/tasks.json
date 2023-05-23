@@ -4,10 +4,9 @@
 		{
 			"type": "npm",
 			"script": "build",
-			"path": "packages/vscode",
 			"group": "build",
 			"problemMatcher": [],
-			"label": "npm: build - packages/vscode",
+			"label": "npm: build",
 			"detail": "tsc -p ./"
 		}
 	]

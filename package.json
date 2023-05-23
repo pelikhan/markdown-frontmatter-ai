@@ -1,14 +1,44 @@
 {
   "name": "markdown-ai",
-  "version": "0.0.0",
-  "license": "MIT",
-  "scripts": {},
+  "displayName": "MarkDown AI Tools",
+  "version": "0.0.1",
+  "publisher": "Microsoft",
+  "description": "Use AI to improve your markdown files",
   "private": true,
-  "devDependencies": {
-    "nx": "^16.2.1",
-    "typescript": "^5.0.4"
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.78.0"
   },
-  "workspaces": [
-    "packages/*"
-  ]
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.markdownai.frontmatter.generate",
+        "title": "Generate frontmatter",
+        "category": "Markdown"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "lint": "eslint \"src/**/*.ts\"",
+    "watch": "tsc -watch -p ./"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "yaml": "^2.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.78.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "eslint": "^8.26.0",
+    "typescript": "^5.0.2"
+  }
 }
