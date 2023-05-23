@@ -40,3 +40,5 @@ Thumbs.db
 
 packages/vscode-extension/samples
 packages/vscode/out
+
+*.vsix
