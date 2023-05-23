@@ -8,7 +8,10 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       "extension.markdownai.openai.clearKey",
-      async () => await clearOpenAIKey(secrets)
+      async () => {
+        await clearOpenAIKey(secrets);
+        vscode.window.showInformationMessage("OpenAI key cleared");
+      }
     ),
     vscode.commands.registerCommand(
       "extension.markdownai.frontmatter.generate",
