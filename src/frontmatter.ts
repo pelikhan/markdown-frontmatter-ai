@@ -28,7 +28,9 @@ export async function generateFrontMatter(
   const { model = "gpt-3.5-turbo", openApiKey, temperature = 0.0 } = options;
 
   // parse as markdown
-  const m = /^(---\n(?<frontmatter>.*)---\n)?(?<markdown>.*)$/s.exec(content);
+  const m = /^(---\r?\n(?<frontmatter>.*)---\r?\n)?(?<markdown>.*)$/s.exec(
+    content
+  );
   if (!m) return {};
   const { frontmatter, markdown } = m.groups || {};
   if (!markdown) return {};
@@ -69,8 +71,9 @@ export async function generateFrontMatter(
   }>(fm);
   const { title, description, keywords } = ryaml;
 
+  const yf = tryParseYaml(frontmatter);
   const newFrontMatter = {
-    ...tryParseYaml(frontmatter),
+    ...yf,
     title,
     description,
     keywords,
