@@ -4,7 +4,8 @@ import { createChatCompletion } from "./openai";
 
 export interface SeoOptions {
   model?: string;
-  openApiKey: string;
+  openAiUrl: string;
+  openAiKey: string;
   temperature?: number;
   logger: vscode.LogOutputChannel;
 }
@@ -15,7 +16,8 @@ export async function generateFrontMatter(
 ) {
   const {
     model = "gpt-3.5-turbo",
-    openApiKey,
+    openAiUrl,
+    openAiKey,
     temperature = 0.0,
     logger,
   } = options;
@@ -37,7 +39,7 @@ export async function generateFrontMatter(
           role: "system",
           content: `You are a front matter generator for mardown. 
 - You generate the title, description, keywords for the markdown given by the user
-- use yaml format 
+- use yaml format, do not use quotes
 - do not generate the \`---\` fences
 - optimize for SEO
 `,
@@ -49,7 +51,8 @@ export async function generateFrontMatter(
       ],
       temperature,
     },
-    openApiKey
+    openAiUrl,
+    openAiKey
   );
   if (completion.status !== 200) {
     logger.error(completion.statusText);

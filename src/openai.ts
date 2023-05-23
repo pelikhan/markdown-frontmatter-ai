@@ -1,9 +1,12 @@
 import * as vscode from "vscode";
 import axios from "axios";
 
-const KEY = "openapikey";
+const ACCESS_KEY = "openaikey";
+const CONFIGURATION = "markdown-frontmatter";
+const URL_KEY = "openaiurl";
+
 export async function getOpenAIKey(secrets: vscode.SecretStorage) {
-  let key = await secrets.get(KEY);
+  let key = await secrets.get(ACCESS_KEY);
   if (!key) {
     key = await vscode.window.showInputBox({
       placeHolder: "OpenAI API Key",
@@ -16,8 +19,28 @@ export async function getOpenAIKey(secrets: vscode.SecretStorage) {
   return key;
 }
 
-export async function clearOpenAIKey(secrets: vscode.SecretStorage) {
-  await secrets.delete(KEY);
+export async function clearOpenAIConfiguration(secrets: vscode.SecretStorage) {
+  await secrets.delete(ACCESS_KEY);
+  const settings = vscode.workspace.getConfiguration(CONFIGURATION);
+  await settings.update(URL_KEY, undefined);
+}
+
+export async function getOpenAIEndPoint(
+  secrets: vscode.SecretStorage
+): Promise<string | undefined> {
+  const settings = vscode.workspace.getConfiguration(CONFIGURATION);
+  let url: string | undefined = (await settings.get(URL_KEY)) as string;
+  if (!url) {
+    url = await vscode.window.showInputBox({
+      prompt: "Your OpenAI API Endpoint will be stored in the workspace.",
+      value: "https://api.openai.com/v1/chat/completions",
+    });
+    if (url !== undefined) {
+      await clearOpenAIConfiguration(secrets);
+      await settings.update(URL_KEY, url);
+    }
+  }
+  return url;
 }
 
 export interface CreateChatCompletionRequest {
@@ -40,18 +63,15 @@ export interface CreateChatCompletionRequest {
 
 export async function createChatCompletion(
   request: CreateChatCompletionRequest,
+  url: string,
   apiKey: string
 ) {
-  const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
-    request,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-    }
-  );
+  const response = await axios.post(url, request, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+  });
 
   return response;
 }

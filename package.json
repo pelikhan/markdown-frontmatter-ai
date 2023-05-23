@@ -19,6 +19,17 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
+    "configuration": [
+      {
+        "title": "Markdown Frontmatter",
+        "properties": {
+          "markdown-frontmatter.openaiurl": {
+            "type": "string",
+            "description": "OpenAI API URL endpoint"
+          }
+        }
+      }
+    ],
     "commands": [
       {
         "command": "extension.markdownai.frontmatter.generate",
