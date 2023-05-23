@@ -23,9 +23,10 @@ export async function generateFrontMatter(
   } = options;
 
   // parse as markdown
-  const m = /^(---\s*\r?\n(?<frontmatter>.*)---\s*\r?\n?)?(?<markdown>.*)$/s.exec(
-    content
-  );
+  const m =
+    /^(---\s*\r?\n(?<frontmatter>.*)---\s*\r?\n?)?(?<markdown>.*)$/s.exec(
+      content
+    );
   if (!m) return {};
   const { frontmatter, markdown } = m.groups || {};
   if (!markdown) return {};
@@ -38,11 +39,11 @@ export async function generateFrontMatter(
         {
           role: "system",
           content: `You are a helpful front matter generator for mardown. You are an SEO expert.
-- You generate the description and keywords for the markdown given by the user
+- You generate the title, description and keywords for the markdown given by the user
 - use yaml format, do not use quotes
 - do not generate the \`---\` fences
 - only 5 keywords or less
-- optimize for SEO
+- optimize for search engine optimization
 `,
         },
         {
@@ -63,15 +64,17 @@ export async function generateFrontMatter(
   logger.info(JSON.stringify(completion.data, null, 2));
   const fm = completion.data?.choices?.[0]?.message?.content;
   const ryaml = tryParseYaml<{
+    title: string;
     description: string;
     keywords: string;
   }>(fm);
-  const { description, keywords: keywordsAll } = ryaml;
+  const { title, description, keywords: keywordsAll } = ryaml;
 
-  const keywords = keywordsAll?.split(/,\s*/g).slice(0, 5).join(", ");
+  const keywords = keywordsAll?.split(/,\s*/g).slice(0, 5);
   const yf = tryParseYaml(frontmatter);
   const newFrontMatter = {
     ...yf,
+    //title,
     description,
     keywords,
   };
