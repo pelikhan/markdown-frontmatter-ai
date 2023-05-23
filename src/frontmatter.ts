@@ -23,7 +23,7 @@ export async function generateFrontMatter(
   } = options;
 
   // parse as markdown
-  const m = /^(---\r?\n(?<frontmatter>.*)---\r?\n)?(?<markdown>.*)$/s.exec(
+  const m = /^(---\s*\r?\n(?<frontmatter>.*)---\s*\r?\n?)?(?<markdown>.*)$/s.exec(
     content
   );
   if (!m) return {};
@@ -43,6 +43,7 @@ export async function generateFrontMatter(
 - do not generate the \`---\` fences
 - only 5 keywords or less
 - optimize for SEO
+- do not append project name to title
 `,
         },
         {
