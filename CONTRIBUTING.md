@@ -2,12 +2,24 @@
 
 Contributions welcome.
 
-## Build
+## Setup
 
 ```
 npm install
+```
+
+## Build
+
+```
 npm run build
-npm run package
 ```
 
 ## Debug
+
+Start the debugger in Visual Studio Code to debug the extension.
+
+## Packaging
+
+```
+npm run package
+```
