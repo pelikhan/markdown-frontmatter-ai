@@ -66,12 +66,15 @@ export async function createChatCompletion(
   url: string,
   apiKey: string
 ) {
-  const response = await axios.post(url, request, {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-  });
-
-  return response;
+  try {
+    const response = await axios.post(url, request, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+    return { response };
+  } catch (error) {
+    return { error };
+  }
 }

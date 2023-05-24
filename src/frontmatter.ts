@@ -32,7 +32,7 @@ export async function generateFrontMatter(
   if (!markdown) return {};
 
   logger.info(`generating frontmatter...`);
-  const completion = await createChatCompletion(
+  const { response: completion, error } = await createChatCompletion(
     {
       model,
       messages: [
@@ -56,7 +56,12 @@ export async function generateFrontMatter(
     openAiUrl,
     openAiKey
   );
-  if (completion.status !== 200) {
+  if (error) {
+    logger.error(error + "");
+    return { error: error + "" };
+  } else if (!completion) {
+    return { error: "no response" };
+  } else if (completion.status !== 200) {
     logger.error(completion.statusText);
     return { error: completion.statusText };
   }
