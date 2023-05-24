@@ -58,12 +58,9 @@ export async function generateFrontMatter(
   );
   if (error) {
     logger.error(error + "");
-    return { error: error + "" };
+    return { error };
   } else if (!completion) {
     return { error: "no response" };
-  } else if (completion.status !== 200) {
-    logger.error(completion.statusText);
-    return { error: completion.statusText };
   }
 
   logger.info(JSON.stringify(completion.data, null, 2));
@@ -71,11 +68,14 @@ export async function generateFrontMatter(
   const ryaml = tryParseYaml<{
     title: string;
     description: string;
-    keywords: string;
+    keywords: string | string[];
   }>(fm);
   const { title, description, keywords: keywordsAll } = ryaml;
 
-  const keywords = keywordsAll?.split(/,\s*/g).slice(0, 5);
+  const keywords =
+    typeof keywordsAll === "string"
+      ? keywordsAll?.split(/,\s*/g).slice(0, 5)
+      : keywordsAll;
   const yf = tryParseYaml(frontmatter);
   const newFrontMatter = {
     ...yf,
@@ -90,7 +90,9 @@ export async function generateFrontMatter(
 
   function tryParseYaml<T>(source: string | undefined): Partial<T> {
     try {
-      const cleaned = source?.replace(/^---\n/, "").replace(/---\n?$/, "");
+      const cleaned = source
+        ?.replace(/^---\s*\r?\n/, "")
+        .replace(/---\s*\n?$/, "");
       return cleaned
         ? (parse(cleaned, {
             prettyErrors: true,

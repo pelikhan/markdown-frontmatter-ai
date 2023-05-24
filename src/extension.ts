@@ -5,6 +5,8 @@ import {
   getOpenAIEndPoint,
 } from "./openai";
 import { generateFrontMatter } from "./frontmatter";
+import { AxiosError } from "axios";
+import { Utils } from "vscode-uri";
 
 export function activate(context: vscode.ExtensionContext) {
   const { secrets } = context;
@@ -29,8 +31,10 @@ export function activate(context: vscode.ExtensionContext) {
       async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) return;
+        const document = editor.document;
+        if (!document) return;
 
-        const content = editor?.document?.getText();
+        const content = document?.getText();
         if (!content) return;
 
         const openAiUrl = await getOpenAIEndPoint(secrets);
@@ -41,7 +45,9 @@ export function activate(context: vscode.ExtensionContext) {
 
         vscode.window.withProgress(
           {
-            title: "Markdown: Generating frontmatter...",
+            title: `Markdown: Generating frontmatter for ${Utils.basename(
+              document.uri
+            )}...`,
             location: vscode.ProgressLocation.Notification,
           },
           async () => {
@@ -51,23 +57,23 @@ export function activate(context: vscode.ExtensionContext) {
               logger,
             });
             if (error) {
-              vscode.window.showErrorMessage(error);
+              if (error instanceof AxiosError) {
+                const statusCode = error.status;
+                switch (statusCode) {
+                  case 429:
+                    vscode.window.showErrorMessage(
+                      "Rate limit exceeded. Please try again later."
+                    );
+                    return;
+                }
+              }
+              vscode.window.showErrorMessage(error + "");
               return;
             }
             if (!output) return;
             if (output === content) return; // no changes
 
-            editor.edit((editBuilder) => {
-              const fullRange = new vscode.Range(
-                0,
-                0,
-                editor.document.lineCount,
-                editor.document.lineAt(
-                  editor.document.lineCount - 1
-                ).text.length
-              );
-              editBuilder.replace(fullRange, output);
-            });
+            vscode.workspace.fs.writeFile(document.uri, Buffer.from(output));
           }
         );
       }
